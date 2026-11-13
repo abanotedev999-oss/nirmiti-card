@@ -1,0 +1,133 @@
+<!-- ───────── reusable icons ───────── -->
+<ng-template #phoneIcon>
+  <svg viewBox="0 0 24 24" fill="#fff"><path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.2.2 2.4.56 3.5a1 1 0 01-.25 1z"/></svg>
+</ng-template>
+<ng-template #waIcon>
+  <svg viewBox="0 0 24 24" fill="#25a366"><path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.2z"/></svg>
+</ng-template>
+<ng-template #igIcon>
+  <svg viewBox="0 0 24 24"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".35" stop-color="#fa7e1e"/><stop offset=".65" stop-color="#d62976"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig)"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg>
+</ng-template>
+
+<div class="wrap">
+
+  <!-- floating hearts & sparkles -->
+  @for (f of floaters; track $index) {
+    <div class="fl" [style.left.%]="f.left" [style.top.px]="f.top" [style.font-size.px]="f.size"
+         [style.color]="f.color" [style.animation-delay.s]="f.delay">{{ f.ch }}</div>
+  }
+
+  <!-- ───────── header ───────── -->
+  <header class="hd a">
+    <div class="tag"><span class="dot"></span>EMERGENCY INFO</div>
+    <div class="ph">
+      <div class="o2"></div>
+      <div class="img" (click)="burst($event)"><img [src]="profile.photo" [alt]="profile.name"></div>
+      <div class="n">{{ profile.initial }}</div>
+    </div>
+    <h1>{{ profile.name }}</h1>
+    <div class="sub">If you found this page, thank you for helping ♡</div>
+  </header>
+
+  <!-- ───────── about ───────── -->
+  <div class="sec">ABOUT NIRMITI</div>
+  <div class="card a" style="animation-delay:.1s">
+    <div class="about">{{ profile.aboutText }}</div>
+    <div class="chips">
+      <span class="chip">📍 {{ profile.areaShort }}</span>
+      <span class="chip">🩸 {{ profile.bloodGroup }}</span>
+      <span class="chip">♏ {{ profile.zodiac }}</span>
+    </div>
+    <a class="igl" [href]="'https://instagram.com/' + profile.instagram" target="_blank" rel="noopener">
+      <ng-container *ngTemplateOutlet="igIcon"></ng-container>
+      <span><b>{{ '@' + profile.instagram }}</b><small>Follow on Instagram</small></span>
+      <em>›</em>
+    </a>
+  </div>
+
+  <!-- ───────── how to help (EN / मराठी) ───────── -->
+  <div class="sec">
+    <span>{{ t().title }}</span>
+    <div class="lang">
+      <button [class.on]="lang() === 'en'" (click)="setLang('en')">EN</button>
+      <button [class.on]="lang() === 'mr'" (click)="setLang('mr')">मराठी</button>
+    </div>
+  </div>
+  <div class="card steps a" style="animation-delay:.1s">
+    @for (s of t().steps; track $index) {
+      <div class="st"><div><b>{{ s.title }}</b><span>{{ s.desc }}</span></div></div>
+    }
+  </div>
+
+  <!-- ───────── quick dial ───────── -->
+  <div class="sec">QUICK EMERGENCY DIAL</div>
+  <div class="q3 a" style="animation-delay:.15s">
+    @for (q of quickDial; track q.number) {
+      <a class="q" [class.b]="q.style === 'white'" [href]="'tel:' + q.number"><b>{{ q.number }}</b><span>{{ q.label }}</span></a>
+    }
+  </div>
+
+  <!-- ───────── blood group ───────── -->
+  <div class="sec">BLOOD GROUP</div>
+  <div class="grid a" style="animation-delay:.2s">
+    <div class="t big">
+      <div><small>IN CASE A DOCTOR ASKS</small><div class="v">{{ profile.bloodGroup }}</div></div>
+      <svg width="30" height="36" viewBox="0 0 22 26"><path d="M11 1C11 1 2 11 2 17a9 9 0 0018 0C20 11 11 1 11 1Z" fill="#c2536a"/></svg>
+    </div>
+  </div>
+
+  <!-- ───────── family ───────── -->
+  <div class="sec">HER FAMILY</div>
+  @for (c of contacts; track c.name; let i = $index) {
+    <div class="fam a" [style.animation-delay.s]="0.25 + i * 0.05">
+      <div class="av">{{ c.initial }}</div>
+      <div><b>{{ c.name }}</b><span>{{ c.label }}</span></div>
+      <div class="act">
+        <a class="ib w" [href]="waLink(c.phone)" target="_blank" rel="noopener"><ng-container *ngTemplateOutlet="waIcon"></ng-container></a>
+        <a class="ib" [href]="'tel:' + c.phone"><ng-container *ngTemplateOutlet="phoneIcon"></ng-container></a>
+      </div>
+    </div>
+  }
+
+  <!-- ───────── location ───────── -->
+  <div class="sec">LET HER FAMILY KNOW</div>
+  <button class="btn loc a" style="animation-delay:.4s" (click)="shareLocation()">
+    <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 00-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 119.5 9 2.5 2.5 0 0112 11.5z"/></svg>
+    Send her location to {{ profile.primaryContact.name }}
+  </button>
+  <div class="hint">Opens WhatsApp with a Google Maps link, ready to send. Your phone will ask permission to use your location.</div>
+
+  <!-- ───────── stay in touch ───────── -->
+  <div class="sec">STAY IN TOUCH</div>
+  <div class="row2 a" style="animation-delay:.5s">
+    <a class="btn" [href]="'https://instagram.com/' + profile.instagram" target="_blank" rel="noopener">
+      <ng-container *ngTemplateOutlet="igIcon"></ng-container>Instagram
+    </a>
+    <button class="btn" (click)="sharePage()">
+      <svg viewBox="0 0 24 24" fill="#7d63b0"><path d="M18 16a3 3 0 00-2.2 1l-6.5-3.7a3 3 0 000-2.6l6.4-3.7A3 3 0 1015 5a3 3 0 00.1.7L8.6 9.4a3 3 0 100 5.2l6.5 3.7A3 3 0 1018 16z"/></svg>
+      Share this page
+    </button>
+  </div>
+  <button class="btn save a" style="animation-delay:.5s" (click)="saveContact()">
+    <svg viewBox="0 0 24 24" fill="#7d63b0"><path d="M12 21C12 21 3 15.5 3 9a4.8 4.8 0 019-2.2A4.8 4.8 0 0121 9c0 6.5-9 12-9 12z"/></svg>
+    Save {{ profile.name.split(' ')[0] }}'s contact
+  </button>
+
+  <div class="foot">Made with love by anujbanote ♡<br>Thank you for being kind to a stranger.</div>
+</div>
+
+<!-- sticky bottom bar -->
+<div class="bar">
+  <div>
+    <a class="m" [href]="'tel:' + profile.primaryContact.phone">📞 Call {{ profile.primaryContact.name }}</a>
+    <a class="r" href="tel:108">🚑 108</a>
+  </div>
+</div>
+
+<!-- heart burst when the photo is tapped -->
+@for (b of bursts(); track b.id) {
+  <div class="burst" [style.left.px]="b.left" [style.top.px]="b.top" [style.font-size.px]="b.size"
+       [style.color]="b.color" [style.--dx]="b.dx" [style.--dy]="b.dy" [style.--rot]="b.rot">{{ b.ch }}</div>
+}
+
+<div class="toast" [class.on]="toastOn()">{{ toastMsg() }}</div>
