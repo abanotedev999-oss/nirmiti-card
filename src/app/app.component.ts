@@ -57,6 +57,8 @@ export class AppComponent {
   // ---- toast ----
   readonly toastMsg = signal('');
   readonly toastOn = signal(false);
+  readonly fabOpen = signal(false);
+  toggleFab(): void { this.fabOpen.update(v => !v); }
   private toastTimer?: ReturnType<typeof setTimeout>;
   toast(msg: string) {
     this.toastMsg.set(msg);
